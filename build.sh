@@ -1,5 +1,5 @@
 #!/bin/bash
 npm install
 sleep 5
-npm tsc
+npm run tsc
 sleep 5
