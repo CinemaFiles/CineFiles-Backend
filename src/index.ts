@@ -11,10 +11,6 @@ app.use(morgan('dev'));
 app.use('/auth', authRouter);
 
 app.use('/movies', movies);
-app.get('/wasa', (req, res)=>{
-    console.log("wasaaa");
-    res.send("wasa");
-})
 
 app.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`);

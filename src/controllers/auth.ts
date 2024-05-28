@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createUserSchema, loginUserSchema } from "../schemas/auth.schema";
-import { Hashing, CompareHash } from '../utils/hash';
-import { error } from "console";
+import { Hashing } from '../utils/hash';
+
 
 const prisma = new PrismaClient();
 

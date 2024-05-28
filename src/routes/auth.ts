@@ -16,9 +16,8 @@ router.post('/register', (req, res) => {
     const validCredential = createUserSchema.safeParse(req.body);
     if (!validCredential.success){
         res.status(400).send(validCredential.error);
-        return registerUser(req.body);
-    }
-
+    }    
+    return registerUser(req.body);
 });
 
 export default router;
