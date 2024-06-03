@@ -1,23 +1,41 @@
 import express from 'express'
-import { registerUser , login} from '../controllers/auth';
+import { registerUser , login, getAll} from '../controllers/auth';
 import { createUserSchema, loginUserSchema } from '../schemas/auth.schema';
 
+
 const router = express.Router();
-router.get('/login',(req, res) => {
+
+router.post('/login',(req, res) => {
     const validUserLogin = loginUserSchema.safeParse(req.body);
     if(!validUserLogin.success){
         res.status(400).send(validUserLogin.error);
         return;
     }
-    return login(req.body, res);
+    login(req.body, res);
+    return;
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
     const validCredential = createUserSchema.safeParse(req.body);
-    if (!validCredential.success){
+    if (!validCredential.success) {
         res.status(400).send(validCredential.error);
-    }    
-    return registerUser(req.body);
+        return;
+    }
+    const data = await registerUser(req.body);
+    res.send({
+        user: {
+            name: data.user?.name,
+            email: data.user?.mail
+        },
+        error: data.error,
+        status: data.status
+    });
+    return;
 });
+
+
+router.get('/all', (_req, res)=>{
+    res.send(getAll());
+})
 
 export default router;
