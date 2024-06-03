@@ -2,8 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createUserSchema, loginUserSchema } from "../schemas/auth.schema";
 import { Hashing, CompareHash } from '../utils/hash';
-
-
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
@@ -51,9 +50,15 @@ export async function login(loginData: Object, res: any){
 
     if (userlogin) {
       const dato = await CompareHash(validCredential.data.password, userlogin.password);
-      if(dato){
-        res.status(200).send({message: "Usuario logueado"});
-        return await prisma.user.findMany()
+      if (dato) {
+        const dataforToken = {
+          id: userlogin.id.toString(),
+          name: userlogin.name,
+        };
+        const secretKey = process.env.SECRET ?? "" // Provide a default value for the secret key
+        const token = jwt.sign(dataforToken, secretKey);
+        res.status(200).send({user:userlogin.name, email:userlogin.mail ,  message: "Usuario logueado" , token:token});
+        return await prisma.user.findMany();
       }
       else{
         res.status(400).send({message: "Usuario o contraseña incorrectos"});
