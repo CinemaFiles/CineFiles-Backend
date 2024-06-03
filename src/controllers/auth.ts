@@ -4,6 +4,7 @@ import { createUserSchema, loginUserSchema } from "../schemas/auth.schema";
 import { Hashing, CompareHash } from '../utils/hash';
 import jwt from 'jsonwebtoken';
 
+const ONE_MONTH = 30 * 24 * 60 * 60;
 const prisma = new PrismaClient();
 
 export async function registerUser(userData: Object) {
@@ -56,7 +57,11 @@ export async function login(loginData: Object, res: any){
           name: userlogin.name,
         };
         const secretKey = process.env.SECRET ?? "" // Provide a default value for the secret key
-        const token = jwt.sign(dataforToken, secretKey);
+        const token = jwt.sign(dataforToken, secretKey,
+          {
+            expiresIn: ONE_MONTH
+          }
+        );
         res.status(200).send({user:userlogin.name, email:userlogin.mail ,  message: "Usuario logueado" , token:token});
         return await prisma.user.findMany();
       }
