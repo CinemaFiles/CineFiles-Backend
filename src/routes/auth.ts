@@ -3,7 +3,7 @@ import { registerUser , login, getAll} from '../controllers/auth';
 import { createUserSchema, loginUserSchema } from '../schemas/auth.schema';
 
 
-const router = express.Router();
+const router = express.Router(); 
 
 router.post('/login',(req, res) => {
     const validUserLogin = loginUserSchema.safeParse(req.body);
