@@ -1,4 +1,4 @@
-class Pila<T>{
+class Cola<T>{
     private items: T[];
 
     constructor(){
@@ -30,10 +30,10 @@ class Pila<T>{
 }
 
 class WatchLater<T> {
-    private stack: Pila<T>;
+    private stack: Cola<T>;
 
     constructor() {
-        this.stack = new Pila<T>();
+        this.stack = new Cola<T>();
     }
 
     añadirAVerMasTarde(item: T): void {
