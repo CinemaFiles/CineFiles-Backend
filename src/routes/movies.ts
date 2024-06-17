@@ -1,6 +1,7 @@
 import express from "express";
 import { allmovies } from "../controllers/movies";
 import { ratemovies } from "../controllers/findMoviesRate";
+import { BinarySearchTree } from "../utils/binaryTree";
 
 const router = express.Router();
 
@@ -8,6 +9,21 @@ router.get("/all", (_req, res) => {
     allmovies().then((movies) => {
         res.json(movies);
     });
+});
+
+router.get("/filtered", (req, res) => {
+    const filter = req.body.filter;
+    const binaryTree = new BinarySearchTree();
+
+    allmovies().then((movies) => {
+        movies.forEach((movie) => {
+            binaryTree.insert(movie);
+        });
+        
+        const result = binaryTree.search(filter);
+        res.json(result);
+    });
+
 });
 
 router.get("/:rate", async (req, res) => {

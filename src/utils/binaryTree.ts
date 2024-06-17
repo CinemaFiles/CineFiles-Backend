@@ -1,5 +1,3 @@
-// src/utils/binarySearchTree.ts
-
 import { Movie } from '../schemas/movie';
 
 class MovieNode {

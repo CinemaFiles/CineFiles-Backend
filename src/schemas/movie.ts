@@ -1,5 +1,4 @@
 interface Movie {
-  id: number;
   title: string;
   original_title: string;
   overview: string;
@@ -9,6 +8,7 @@ interface Movie {
   release_date: string;
   genres: string;
 }
+
 
 class MovieNodeLk{
   movie:Movie;
@@ -89,3 +89,4 @@ class BinarySearchTree {
 }
 
 export { BinarySearchTree, Movie , MovieNodeLk, MovieNode};
+
