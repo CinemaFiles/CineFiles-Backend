@@ -10,6 +10,15 @@ interface Movie {
   genres: string;
 }
 
+class MovieNodeLk{
+  movie:Movie;
+  next:MovieNodeLk|null;
+
+  constructor(movie: Movie){
+    this.movie = movie;
+    this.next = null;
+  }
+}
 class MovieNode {
   movie: Movie;
   left: MovieNode | null;
@@ -79,4 +88,4 @@ class BinarySearchTree {
   }
 }
 
-export { BinarySearchTree, Movie };
+export { BinarySearchTree, Movie , MovieNodeLk, MovieNode};
