@@ -1,11 +1,11 @@
 import { Movie } from "../schemas/movie";
 
-export class Cola{
+export class Cola {
     elementos: Movie[] = [];
     frente: number = 0;
     atras: number = 0;
 
-    agregarElemento(movie: Movie){
+    agregarElemento(movie: Movie) {
         this.elementos[this.atras] = movie;
         this.atras++;
     }
@@ -15,16 +15,16 @@ export class Cola{
             return undefined;
         }
         const element = this.elementos[this.frente];
-        this.elementos[this.frente] = undefined as any;  
+        this.elementos[this.frente] = undefined as any;
         this.frente++;
         return element;
     }
 
-    verElementoDelFrente():  | undefined {
+    verElementoDelFrente(): Movie | undefined {
         if (this.isEmpty()) {
             return undefined;
         }
-        console.log(this.elementos[this.frente]);
+        return this.elementos[this.frente];
     }
 
     isEmpty(): boolean {
@@ -39,5 +39,9 @@ export class Cola{
         this.elementos = [];
         this.frente = 0;
         this.atras = 0;
+    }
+
+    obtenerTodos(): Movie[] {
+        return this.elementos.slice(this.frente, this.atras);
     }
 }
