@@ -4,7 +4,11 @@ import { allmovies } from "../controllers/movies";
 import { BinarySearchTree } from "../utils/binaryTree";
 import { ListaSimple } from "../utils/ListaSimple";
 
+import { Cola } from "../utils/queue";
+import { Movie } from "../schemas/movie";
+
 const router = express.Router();
+const watchLaterQueue = new Cola();
 
 router.get("/all", (_req, res) => {
     allmovies().then((movies) => {
@@ -37,7 +41,7 @@ router.post("/filtered", (req, res) => {
     const binaryTree = new BinarySearchTree();
 
     allmovies().then((movies) => {
-        movies.forEach((movie) => {
+        movies.forEach((movie: Movie) => {
             binaryTree.insert(movie);
         });
         
@@ -65,5 +69,26 @@ router.post("/filtered", (req, res) => {
     
     return
 }); */
+
+router.post("/watchlater/add", (req, res) => {
+    const movie: Movie = req.body.movie;
+    watchLaterQueue.agregarElemento(movie);
+    res.status(200).send({ message: "Movie added to watch later queue." });
+});
+
+router.post("/watchlater/remove", (_req, res) => {
+    const removedMovie = watchLaterQueue.quitarElemento();
+    if (removedMovie) {
+        res.status(200).send({ message: "Movie removed from watch later queue.", movie: removedMovie });
+    } else {
+        res.status(404).send({ message: "No movies in watch later queue." });
+    }
+});
+
+router.get("/watchlater", (_req, res) => {
+    const movies = watchLaterQueue.obtenerTodos();
+    res.status(200).json(movies);
+});
+
 
 export default router;
