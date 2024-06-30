@@ -1,48 +1,4 @@
-import express from "express";
-import { allmovies } from "../controllers/movies";
-import { Cola } from "../utils/queue";
-import { Movie } from "../schemas/movie";
-import { listaHome, binarytree } from "..";
-import { findMoviebyId } from "../controllers/movies";
-import path from 'path';
-
-const router = express.Router();
-const watchLaterQueue = new Cola();
-
-router.get("/all", (_req, res) => {
-    allmovies().then((movies) => {
-        res.json(movies);
-    });
-});
-
-/*De ahi hago el filtro por categoria 
-router.get("/:category", (req, res) =>{
-    const {category} = req.params;
-}) */
-
-
-router.get("/home", (req, res)=>{
-    const index :number = Number(req.query.index);
-    res.json(listaHome.peliculas.slice(21*(index-1),21*index));
-});
-
-
-router.get('/info_movie/:id', (req, res) =>{
-    const {id} = req.params;
-    findMoviebyId(id)
-    .then(movie =>{
-        console.log(movie);
-        const responseHtml =
-        `
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>inicio</title>
-
-    <style>
-        *{
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -166,6 +122,10 @@ router.get('/info_movie/:id', (req, res) =>{
     z-index: 1; 
   }
   
+  
+  
+  
+  
   * {
       border: 0;
       box-sizing: border-box;
@@ -280,6 +240,7 @@ router.get('/info_movie/:id', (req, res) =>{
       height: 1px;
     }
     
+    
     .search-bar input:focus + .search-btn,
     .search-bar input:valid + .search-btn {
       background: transparent;
@@ -358,7 +319,7 @@ router.get('/info_movie/:id', (req, res) =>{
   
   img {
     position: relative;
-    width: 80%;
+    width: 35%;
     height: auto;
   }
   
@@ -482,144 +443,3 @@ router.get('/info_movie/:id', (req, res) =>{
     font-size: small;
   }
   
-    </style>
-    <link href="https://fonts.cdnfonts.com/css/wildest" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/barcade" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-    <link
-    href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
-    rel="stylesheet"/>
-    <style>
-        body {
-        background: url('https://raw.githubusercontent.com/CinemaFiles/CineFiles-front/main/Styles/gisito.gif') no-repeat center center fixed;
-        background-size: cover;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        }
-        body::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: inherit;
-        filter: blur(5px);
-        opacity: 1; /* Ajusta el valor para más o menos opacidad */
-        z-index: -1;
-        background: rgba(0, 0, 0, 0.4); 
-        }
-    </style>
-</head>
-<body>
-    <header class="header">
-        <div>
-            <a href="#" class="logoPS">CineFiles</a>
-            <a href="#" class="logoPS">CineFiles</a>
-            <a href="#" class="logoPS">CineFiles</a>
-            <a href="#" class="logoPS">CineFiles</a>
-            <a href="#" class="logoPS">CineFiles</a>
-            <a href="#" class="logoPS">CineFiles</a>
-            <a href="#" class="logoPS">CineFiles</a>
-            <a href="#" class="logoPS">CineFiles</a>       
-        </div>
-        <nav id="navbar" class="navbar">
-            <a id="navigate" href="./navigate.html">Navigate</a>
-            <a id="account" href="#">Account</a> 
-        </nav>
-    </header>
-    
-    <section class="filmsection">
-      <div class="first">
-          <img src="http://image.tmdb.org/t/p/original${movie?.Poster}" alt="">
-
-          <div class="info">
-              <div class="infilm">
-                  <h1 style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.title}</h1>
-                  <h2 style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.release_date}</h2>
-                  <h3 style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.original_title}</h3>
-              </div>
-              <div class="calif">
-                  <p>${movie?.popularity}</p> 
-              </div>
-          </div>
-          
-          <div class="synopsis">
-              <p class="description" style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.overview}</p>
-          </div>
-
-      </div >
-
-      <div class="second">
-
-      </div>
-
-      <div class="third">
-
-      </div>
-    </section>
-    
-
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <script>
-        const sr =ScrollReveal({
-          distance:'65px',
-          duration: 2000,
-          delay: 450,
-          reset: true
-        });
-
-        sr.reveal('.filmsection',{delay: 50, origin:'top'});
-
-        
-    </script>
-
-
-</body>
-</html>
-
-        `
-        res.send(responseHtml)
-    }).catch(error => {
-        console.log(error)
-    })
-})
-
-router.get('/wasa', (_req, res)=>{
-    //envia el archivo hola.html como respuesta
-    res.sendFile(path.resolve('src/static/hola.html'))
-})
-
-router.get("/search/:filter", (req, res) => {
-    const { filter } = req.params;
-    console.log(filter)
-    const result = binarytree.search(filter);
-    res.json(result);
-});
-
-router.post("/watchlater/add", (req, res) => {
-    const movie: Movie = req.body.movie;
-    watchLaterQueue.agregarElemento(movie);
-    res.status(200).send({ message: "Movie added to watch later queue." });
-});
-
-router.post("/watchlater/remove", (_req, res) => {
-    const removedMovie = watchLaterQueue.quitarElemento();
-    if (removedMovie) {
-        res.status(200).send({ message: "Movie removed from watch later queue.", movie: removedMovie });
-    } else {
-        res.status(404).send({ message: "No movies in watch later queue." });
-    }
-});
-
-router.get("/watchlater", (_req, res) => {
-    const movies = watchLaterQueue.obtenerTodos();
-    res.status(200).json(movies);
-});
-
-
-export default router;
