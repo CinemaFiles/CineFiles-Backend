@@ -6,6 +6,7 @@ import { listaHome, binarytree } from "..";
 import { findMoviebyId } from "../controllers/movies";
 import path from 'path';
 import { cosineSimilarity } from "../utils/recomendation";
+import { recommendMovies } from "../utils/sistemarecomendacion";
 
 const router = express.Router();
 const watchLaterQueue = new Cola();
@@ -605,6 +606,12 @@ router.post("/watchlater/remove", (_req, res) => {
     } else {
         res.status(404).send({ message: "No movies in watch later queue." });
     }
+});
+
+router.post('/watchlater/recommend', (req, res) => {
+  const movie: Movie = req.body.movie;
+  const recommendations = recommendMovies(watchLaterQueue, movie);
+  res.status(200).send({ recommendations });
 });
 
 router.get("/watchlater", (_req, res) => {
