@@ -5,6 +5,7 @@ import { Movie } from "../schemas/movie";
 import { listaHome, binarytree } from "..";
 import { findMoviebyId } from "../controllers/movies";
 import path from 'path';
+import { cosineSimilarity } from "../utils/recomendation";
 
 const router = express.Router();
 const watchLaterQueue = new Cola();
@@ -15,35 +16,51 @@ router.get("/all", (_req, res) => {
     });
 });
 
-/*De ahi hago el filtro por categoria 
-router.get("/:category", (req, res) =>{
-    const {category} = req.params;
-}) */
-
+router.get("/recomendation/:id", (req, res) => {
+    const {id} = req.params;
+    findMoviebyId(id).then(movie =>{
+      console.log(movie);
+      let similitudes: { movie: Movie; similitud: number; }[] = [];
+        listaHome.peliculas.forEach(element =>{
+        const similitud = cosineSimilarity(movie?.overview as string, element?.overview )
+        similitudes.push({ movie: element, similitud:similitud});
+        })
+        similitudes.sort((a,b) => b.similitud - a.similitud);
+        console.log(similitudes.slice(1, 7));
+        res.json(similitudes.slice(1, 7));
+    }).catch(error =>{
+      console.log(error);
+    })
+})
 
 router.get("/home", (req, res)=>{
     const index :number = Number(req.query.index);
     res.json(listaHome.peliculas.slice(21*(index-1),21*index));
 });
 
-
 router.get('/info_movie/:id', (req, res) =>{
     const {id} = req.params;
     findMoviebyId(id)
     .then(movie =>{
         console.log(movie);
-        //=================================
+        let similitudes: { movie: Movie; similitud: number; }[] = [];
+        listaHome.peliculas.forEach(element =>{
+        const similitud = cosineSimilarity(movie?.overview as string, element?.overview )
+        similitudes.push({ movie: element, similitud:similitud});
+      })
+        similitudes.sort((a,b) => b.similitud - a.similitud);
+        console.log(similitudes.slice(1, 7));
+//====================================================================================================================================
         const responseHtml = 
         `
-          <!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>inicio</title>
-
     <style>
-      *{
+    *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -338,13 +355,13 @@ section {
   justify-content: center;
   z-index: 10;
   padding: 0 7%;
-  margin-top: 20%;
+  margin-top: 10%;
 
 }
 .info {
   position: relative;
   display: flex;
-  flex-direction: column; /* Alinear verticalmente los elementos dentro de .info */
+  flex-direction: column; 
   margin-left: 8%;
   margin-right: 4%;
 }
@@ -358,6 +375,7 @@ section {
   backdrop-filter: blur(1px); 
   padding: 5%; 
   color: aliceblue; 
+  height: 70%;
 
 
 }
@@ -369,14 +387,14 @@ img {
 }
 
 .infilm {
-  margin-bottom: 1rem; /* Espacio inferior para separar de la sección .calif */
+  margin-bottom: 1rem; 
 
 
   font-family: "Roboto Mono", monospace;
   font-optical-sizing: auto;
 
   font-style: normal;
-  white-space: nowrap; /* Evitar que el texto se divida en varias líneas */
+  white-space: nowrap; 
 }
 
 .calif {
@@ -420,10 +438,44 @@ font-size: small;
 }
 
 
+.recomendaciones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5%;
+  margin-right: 5%;
+}
+
+.recomendaciones a {
+  text-decoration: none;
+  
+  padding: 1% 1% ;
+}
+.recom {
+  margin-top: 1%;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  width: 100%;
+  
+  font-family: "Roboto Mono", monospace;
+  font-optical-sizing: auto;
+
+  font-style: normal;
+}
+.recomendaciones img {
+  width: 100px;
+  height: auto;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.recomendaciones img:hover {
+  transform: scale(1.1);
+}
+
 
 
     </style>
-
     <link href="https://fonts.cdnfonts.com/css/wildest" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/barcade" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -486,22 +538,25 @@ font-size: small;
                   <h3 style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.release_date}</h3>
               </div>
               <div class="calif">
-                  <p>${movie?.popularity}</p> 
+                  <p>${movie?.release_date}</p> 
               </div>
           </div>
           
           <div class="synopsis">
-              <p class="description" style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.overview}</p>
+              <p class="description" style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">En el siglo XXIII, el Capitán James T. Kirk y la tripulación de la nave estelar Enterprise exploran nuevos mundos y desafían la supremacía de los klingon.En el siglo XXIII, el Capitán James T. Kirk y la tripulación de la nave estelar Enterprise exploran nuevos mundos y desafían la supremacía de los klingon.</p>
           </div>
 
       </div >
-
-      <div class="second">
-
-      </div>
-
-      <div class="third">
-
+      <h2 class="recom">Recomendaciones</h2>
+      <div class="recomendaciones">
+       
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[1].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[1].movie.Poster}" alt="${similitudes[1].movie.title}"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[2].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[2].movie.Poster}" alt="${similitudes[2].movie.title}"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[3].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[3].movie.Poster}" alt="${similitudes[3].movie.title}"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[4].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[4].movie.Poster}" alt="${similitudes[4].movie.title}"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[5].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[5].movie.Poster}" alt="${similitudes[5].movie.title}"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[6].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[6].movie.Poster}" alt="${similitudes[6].movie.title}"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[7].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[7].movie.Poster}" alt="${similitudes[7].movie.title}"></a>
       </div>
     </section>
     <script src="https://unpkg.com/scrollreveal"></script>
@@ -518,7 +573,7 @@ font-size: small;
 </html>
 
         `
-        //=================================
+//====================================================================================================================================
         res.send(responseHtml)
     }).catch(error => {
         console.log(error)
