@@ -22,7 +22,7 @@ router.get("/recomendation/:id", (req, res) => {
       console.log(movie);
       let similitudes: { movie: Movie; similitud: number; }[] = [];
         listaHome.peliculas.forEach(element =>{
-        const similitud = cosineSimilarity(movie?.overview as string, element?.overview )
+        const similitud = cosineSimilarity(movie?.title as string, element?.title as string )
         similitudes.push({ movie: element, similitud:similitud});
         })
         similitudes.sort((a,b) => b.similitud - a.similitud);
@@ -45,7 +45,7 @@ router.get('/info_movie/:id', (req, res) =>{
         console.log(movie);
         let similitudes: { movie: Movie; similitud: number; }[] = [];
         listaHome.peliculas.forEach(element =>{
-        const similitud = cosineSimilarity(movie?.overview as string, element?.overview )
+        const similitud = cosineSimilarity(movie?.title + ' ' + movie?.original_title + ' '+ movie?.overview as string, element?.title + ' ' + element?.original_title + ' ' + movie?.overview   as string )
         similitudes.push({ movie: element, similitud:similitud});
       })
         similitudes.sort((a,b) => b.similitud - a.similitud);
@@ -522,7 +522,7 @@ font-size: small;
         </div>    
         
         <nav id="navbar" class="navbar">
-            <a id="navigate" href="./navigate.html">Navigate</a>
+            <a id="navigate" href="https://cinemafiles.github.io/CineFiles-front/Files/navigate.html">Navigate</a>
             <a id="account" href="./profile.html">Account</a> 
         </nav>
     </header>
@@ -543,7 +543,7 @@ font-size: small;
           </div>
           
           <div class="synopsis">
-              <p class="description" style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">En el siglo XXIII, el Capitán James T. Kirk y la tripulación de la nave estelar Enterprise exploran nuevos mundos y desafían la supremacía de los klingon.En el siglo XXIII, el Capitán James T. Kirk y la tripulación de la nave estelar Enterprise exploran nuevos mundos y desafían la supremacía de los klingon.</p>
+              <p class="description" style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.overview}</p>
           </div>
 
       </div >

@@ -17,7 +17,6 @@ const initMovies = (listaHome : ListaSimple) =>{
         listaHome.peliculas.forEach( element =>{
             binarytree.insert(element);
             console.log(element.title);
-            console.log(element.id);
         })
         console.log('Peliculas cargadas correctamente')
     }).catch(error =>{

@@ -12,13 +12,14 @@ export function contarPalabras(texto: string): Record<string, number> {
         conteoPalabras[palabraLimpia] = 1; // Inicializa el conteo si la palabra es nueva.
       }
     });
-    console.log(typeof conteoPalabras);
     return conteoPalabras; // Retorna el objeto con el conteo de palabras.
   }
 
 export function cosineSimilarity(text1:string, text2:string){
     const text1Words = contarPalabras(text1);
     const text2Words = contarPalabras(text2);
+    //console.log(text1Words);
+    //console.log(text2Words);
     let firstsum =0;
     let secondsum =0;
     let nominator = 0;
