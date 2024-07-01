@@ -1,5 +1,5 @@
 interface Movie {
-  id: string;
+  id:string;
   title: string;
   original_title: string;
   overview: string;

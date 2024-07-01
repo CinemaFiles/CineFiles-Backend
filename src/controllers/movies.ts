@@ -39,27 +39,3 @@ export async function findMoviebyId(name: string){
         }
     });
 }
-
-export async function findMoviesbyGenre(genre: string){
-    const movies = await prisma.movie.findMany({
-        where:{
-            genres:genre
-        },
-        select:{
-            id: true,
-            title: true,
-            original_title: true,
-            overview: true,
-            Poster: true,
-            Backdrop: true,
-            popularity: true,
-            release_date: true,
-            genres: true,
-        }
-    });
-
-    return movies.map(movie => ({
-        ...movie,
-        id: movie.id.toString()
-    }))
-}
