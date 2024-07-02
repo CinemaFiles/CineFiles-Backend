@@ -65,6 +65,7 @@ export async function login(loginData: Object, res: any){
           }
         );
         res.status(200).send({user:userlogin.name, email:userlogin.mail , message: "Usuario logueado" , token:token});
+        return;
       }
       else{
         res.status(400).send({message: "Usuario o contraseña incorrectos"});
