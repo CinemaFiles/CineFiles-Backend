@@ -2,6 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import authRouter from './routes/auth'
 import movies from './routes/movies'
+import locationsRouter from './routes/locations';
 import cors from 'cors'
 import { ListaSimple } from './utils/ListaSimple'
 import { allmovies } from './controllers/movies'
@@ -37,6 +38,8 @@ app.use(morgan('dev'));
 app.use('/auth', authRouter);
 
 app.use('/movies', movies);
+
+app.use('/movie', locationsRouter);
 
 app.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`);
