@@ -3,6 +3,8 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createUserSchema, loginUserSchema } from "../schemas/auth.schema";
 import { Hashing, CompareHash } from '../utils/hash';
 import jwt from 'jsonwebtoken';
+import { string } from "zod";
+
 
 const ONE_MONTH = 30 * 24 * 60 * 60;
 const prisma = new PrismaClient();
@@ -63,8 +65,8 @@ export async function login(loginData: Object, res: any){
             expiresIn: ONE_MONTH
           }
         );
-        res.status(200).send({userId:userlogin.id as unknown as string, user:userlogin.name, email:userlogin.mail ,  message: "Usuario logueado" , token:token});
-        return await prisma.user.findMany();
+        res.status(200).send({user:userlogin.name, email:userlogin.mail , id:userlogin.id.toString() ,message: "Usuario logueado" , token:token});
+        return;
       }
       else{
         res.status(400).send({message: "Usuario o contraseña incorrectos"});
