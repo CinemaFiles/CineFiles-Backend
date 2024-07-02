@@ -63,7 +63,7 @@ export async function login(loginData: Object, res: any){
             expiresIn: ONE_MONTH
           }
         );
-        res.status(200).send({userId:userlogin.id, user:userlogin.name, email:userlogin.mail ,  message: "Usuario logueado" , token:token});
+        res.status(200).send({userId:userlogin.id as unknown as string, user:userlogin.name, email:userlogin.mail ,  message: "Usuario logueado" , token:token});
         return await prisma.user.findMany();
       }
       else{
