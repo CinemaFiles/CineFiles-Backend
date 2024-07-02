@@ -3,6 +3,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createUserSchema, loginUserSchema } from "../schemas/auth.schema";
 import { Hashing, CompareHash } from '../utils/hash';
 import jwt from 'jsonwebtoken';
+import e from "express";
 
 const ONE_MONTH = 30 * 24 * 60 * 60;
 const prisma = new PrismaClient();
@@ -55,6 +56,7 @@ export async function login(loginData: Object, res: any){
         const dataforToken = {
           id: userlogin.id.toString(),
           name: userlogin.name,
+          email: userlogin.mail
         };
         const secretKey = process.env.SECRET ?? "" // Provide a default value for the secret key
         const token = jwt.sign(dataforToken, secretKey,
@@ -62,7 +64,7 @@ export async function login(loginData: Object, res: any){
             expiresIn: ONE_MONTH
           }
         );
-        res.status(200).send({user:userlogin.name, email:userlogin.mail ,  message: "Usuario logueado" , token:token});
+        res.status(200).send({userId:userlogin.id, user:userlogin.name, email:userlogin.mail ,  message: "Usuario logueado" , token:token});
         return await prisma.user.findMany();
       }
       else{
