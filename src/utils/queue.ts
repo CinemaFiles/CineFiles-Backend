@@ -1,26 +1,30 @@
-import { Movie } from "../schemas/movie";
+import { addWatchLater, removeWatchLater, getallWatchLater } from "../controllers/watchLater";
 
 export class Cola {
-    elementos: Movie[] = [];
+    elementos: string[] = [];
     frente: number = 0;
     atras: number = 0;
 
-    agregarElemento(movie: Movie) {
-        this.elementos[this.atras] = movie;
+    agregarElemento(userId: string, movieId: string) {
+        this.elementos[this.atras] = movieId;
         this.atras++;
+        addWatchLater(userId, movieId);
     }
 
-    quitarElemento(): Movie | undefined {
+    //quitar elemento
+    //necesito el id del usuario
+    quitarElemento(userId :string): string | undefined {
         if (this.isEmpty()) {
             return undefined;
         }
         const element = this.elementos[this.frente];
         this.elementos[this.frente] = undefined as any;
         this.frente++;
+        removeWatchLater(userId, element);
         return element;
     }
 
-    verElementoDelFrente(): Movie | undefined {
+    verElementoDelFrente(): string | undefined{
         if (this.isEmpty()) {
             return undefined;
         }
@@ -41,7 +45,8 @@ export class Cola {
         this.atras = 0;
     }
 
-    obtenerTodos(): Movie[] {
-        return this.elementos.slice(this.frente, this.atras);
+    async obtenerTodos(userId: string): Promise<string[]>  {
+        return await getallWatchLater(userId)
+        //return this.elementos.slice(this.frente, this.atras);
     }
 }

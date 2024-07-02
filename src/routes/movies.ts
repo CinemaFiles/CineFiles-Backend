@@ -4,7 +4,6 @@ import { Cola } from "../utils/queue";
 import { Movie } from "../schemas/movie";
 import { listaHome, binarytree } from "..";
 import { findMoviebyId } from "../controllers/movies";
-import path from 'path';
 import { cosineSimilarity } from "../utils/recomendation";
 
 const router = express.Router();
@@ -538,7 +537,7 @@ font-size: small;
                   <h3 style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.release_date}</h3>
               </div>
               <div class="calif">
-                  <p>${movie?.release_date}</p> 
+                  <p>${movie?.popularity}</p> 
               </div>
           </div>
           
@@ -580,11 +579,6 @@ font-size: small;
     })
 })
 
-router.get('/wasa', (_req, res)=>{
-    //envia el archivo hola.html como respuesta
-    res.sendFile(path.resolve('src/static/hola.html'))
-})
-
 router.get("/search/:filter", (req, res) => {
     const { filter } = req.params;
     console.log(filter)
@@ -593,24 +587,24 @@ router.get("/search/:filter", (req, res) => {
 });
 
 router.post("/watchlater/add", (req, res) => {
-    const movie: Movie = req.body.movie;
-    watchLaterQueue.agregarElemento(movie);
+    const { movieId, userId } = req.body;
+    watchLaterQueue.agregarElemento(userId, movieId);
     res.status(200).send({ message: "Movie added to watch later queue." });
 });
 
-router.post("/watchlater/remove", (_req, res) => {
+/* router.post("/watchlater/remove", (_req, res) => {
     const removedMovie = watchLaterQueue.quitarElemento();
     if (removedMovie) {
         res.status(200).send({ message: "Movie removed from watch later queue.", movie: removedMovie });
     } else {
         res.status(404).send({ message: "No movies in watch later queue." });
     }
-});
+}); */
 
-router.get("/watchlater", (_req, res) => {
+/* router.get("/watchlater", (_req, res) => {
     const movies = watchLaterQueue.obtenerTodos();
     res.status(200).json(movies);
-});
+}); */
 
 
 export default router;

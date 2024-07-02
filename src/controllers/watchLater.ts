@@ -2,6 +2,42 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+export async function addWatchLater (userId:string , movieId : string){
+    const watchLater = await prisma.see_later.create({
+        data:{
+            user_id: BigInt(userId),
+            id_movie: BigInt(movieId)
+            }
+        })
+    return watchLater;  
+    }
+
+export async function removeWatchLater (userId:string , movieId : string){
+    const id_see_later = await prisma.see_later.findFirst({
+        where:{
+            user_id: BigInt(userId),
+            id_movie: BigInt(movieId)
+        }
+    })
+    console.log(id_see_later?.id)
+    const watchLater = await prisma.see_later.delete({
+       where:{
+              id: id_see_later?.id
+       }
+    })
+    return watchLater;
+}
+
+//obtener todos los elementos
+export async function getallWatchLater(userId:string){
+    const watchLater = await prisma.see_later.findMany({
+        where:{
+            user_id: BigInt(userId)
+        }
+    })
+    return watchLater.map(element => element.id_movie.toString());
+}
+
 export const addMovieToWatchLater = async (req: { body: { userId: any; movieId: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: { message?: string; watchLater?: any; error?: string; }): void; new(): any; }; }; }) => {
     const { userId, movieId } = req.body;
 
