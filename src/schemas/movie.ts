@@ -10,6 +10,17 @@ interface Movie {
   genres: string;
 }
 
+interface Mov{
+  title: string;
+  original_title: string;
+  overview: string;
+  Poster: string;
+  Backdrop: string;
+  popularity: number;
+  release_date: string;
+  genres: string;
+}
+
 
 class MovieNodeLk{
   movie:Movie;
@@ -89,5 +100,5 @@ class BinarySearchTree {
   }
 }
 
-export { BinarySearchTree, Movie , MovieNodeLk, MovieNode};
+export { BinarySearchTree, Movie , MovieNodeLk, MovieNode, Mov};
 

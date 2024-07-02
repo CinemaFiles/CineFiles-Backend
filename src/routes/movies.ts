@@ -1,10 +1,11 @@
 import express from "express";
 import { allmovies } from "../controllers/movies";
 import { Cola } from "../utils/queue";
-import { Movie } from "../schemas/movie";
+import { Mov, Movie } from "../schemas/movie";
 import { listaHome, binarytree } from "..";
 import { findMoviebyId } from "../controllers/movies";
 import { cosineSimilarity } from "../utils/recomendation";
+//import { recommendMovies } from "../utils/sistemarecomendacion";
 
 const router = express.Router();
 const watchLaterQueue = new Cola();
@@ -69,8 +70,17 @@ router.get('/info_movie/:id', (req, res) =>{
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>inicio</title>
+    <link rel="stylesheet" href="../Styles/film.css">
+    <link href="https://fonts.cdnfonts.com/css/wildest" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/barcade" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
+    rel="stylesheet"/>
     <style>
-    *{
+      *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -385,9 +395,8 @@ section {
   backdrop-filter: blur(1px); 
   padding: 5%; 
   color: aliceblue; 
-  height: 70%;
-
-
+  
+  max-height: 420px;
 }
 
 img {
@@ -432,13 +441,12 @@ img {
   color: aliceblue;
   font-size: small;
   font-style: normal;
+  overflow-y: auto;
+  max-height: 380px; 
+  
 }
 
-.description{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 h2{
 font-size: small;
@@ -483,17 +491,33 @@ font-size: small;
   transform: scale(1.1);
 }
 
+#select {
+  border-radius: 10px;
+  opacity: 0.8;
+  backdrop-filter: blur(5px);
+  padding: 10px;
+  border: 1px solid ;
+  background-color: black;
+  color: white;
+}
 
+#submit-btn {
+  border-radius: 10px;
+  opacity: 0.8;
+  backdrop-filter: blur(5px);
+  padding: 10px 20px;
+  border: none;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
+#submit-btn:hover {
+  opacity: 1;
+  backdrop-filter: blur(0);
+}
 
     </style>
-    <link href="https://fonts.cdnfonts.com/css/wildest" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/barcade" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-    <link
-    href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
-    rel="stylesheet"/>
     <style>
         body {
         background: url('https://raw.githubusercontent.com/CinemaFiles/CineFiles-front/main/Styles/gisito.gif') no-repeat center center fixed;
@@ -532,8 +556,9 @@ font-size: small;
         </div>    
         
         <nav id="navbar" class="navbar">
-            <a id="navigate" href="https://cinemafiles.github.io/CineFiles-front/Files/navigate.html">Navigate</a>
-            <a id="account" href="./profile.html">Account</a> 
+            <a id="navigate" href="./navigate.html">Navigate</a>
+            <a id="account" href="./profile.html">Profile</a> 
+            <a id="login" href="./login.html"></a>
         </nav>
     </header>
     
@@ -553,20 +578,37 @@ font-size: small;
           </div>
           
           <div class="synopsis">
-              <p class="description" style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">${movie?.overview}</p>
+
+              <p class="description" style="  font-family:Roboto Mono, monospace;font-optical-sizing: auto;">En el siglo XXIII, el Capitán James T. Kirk y la tripulación de la nave estelar Enterprise exploran nuevos mundos y desafían la supremacía de los klingon.En el siglo XXIII, el Capitán James T. Kirk y la tripulación de la nave estelar Enterprise exploran nuevos mundos y desafían la supremacía de los klingon.</p>
+
+                    <select id="select" class="form-select" aria-label="Disabled select example">
+                        <option selected  value="1">Agregar pelicula</option>
+                        <option value="2">Marcar como visto</option>
+                    </select>
+                    <button type="submit" id="sumbit-btn" style="  border-radius: 10px;
+                    opacity: 0.8;
+                    backdrop-filter: blur(5px);
+                    padding: 10px 20px;
+                    border: none;
+                    background-color: black;
+                    color: white;
+                    cursor: pointer;">sumbit</button>
+            </div>
+
           </div>
+
 
       </div >
       <h2 class="recom">Recomendaciones</h2>
       <div class="recomendaciones">
        
-        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[1].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[1].movie.Poster}" alt="${similitudes[1].movie.title}"></a>
-        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[2].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[2].movie.Poster}" alt="${similitudes[2].movie.title}"></a>
-        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[3].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[3].movie.Poster}" alt="${similitudes[3].movie.title}"></a>
-        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[4].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[4].movie.Poster}" alt="${similitudes[4].movie.title}"></a>
-        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[5].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[5].movie.Poster}" alt="${similitudes[5].movie.title}"></a>
-        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[6].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[6].movie.Poster}" alt="${similitudes[6].movie.title}"></a>
-        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[7].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[7].movie.Poster}" alt="${similitudes[7].movie.title}"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[1].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[1].movie.Poster}" alt="Pelicula 1"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[2].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[2].movie.Poster}" alt="Pelicula 2"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[3].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[3].movie.Poster}" alt="Pelicula 3"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[4].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[4].movie.Poster}" alt="Pelicula 4"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[5].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[5].movie.Poster}" alt="Pelicula 5"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[6].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[6].movie.Poster}" alt="Pelicula 6"></a>
+        <a href="https://cinefiles-backend.onrender.com/movies/info_movie/${similitudes[7].movie.id}"><img src="http://image.tmdb.org/t/p/original${similitudes[7].movie.Poster}" alt="Pelicula 7"></a>
       </div>
     </section>
     <script src="https://unpkg.com/scrollreveal"></script>
@@ -578,6 +620,26 @@ font-size: small;
           reset: true
         });
         sr.reveal('.filmsection',{delay: 50, origin:'top'});
+    </script>
+    <script>
+        const sumbit = document.getElementById('sumbit-btn');
+        sumbit.addEventListener('click', (e) =>{
+            e.preventDefault();
+            const select = document.getElementById('select')
+            console.log(select)
+            console.log(select.value)
+            if(select.value ===1){
+                fetch('https://cinefiles-backend.onrender.com/movies/watchlater/add')
+                .then(res => res.json())
+                .then(res=>{
+                    console.log(res)
+                    alert('Pelicula agregada a ver mas tarde');
+                })
+            }
+            else if (select.value === 2){
+                alert('Pelicula eliminada')
+            }
+        })
     </script>
 </body>
 </html>
@@ -624,6 +686,24 @@ router.post("/watchlater/all", async (req, res) => {
   console.log(movies)
   res.status(200).json(movies);
 });
+
+router.post('/watchlater/recommend', async (req, res) => {
+  const user = req.body.userId; //id del usuario //necesitamos esta wbd para saber que las pelis son de el
+  const movies = await watchLaterQueue.obtenerTodos(user as string)
+  console.log(movies)
+  const moviePromises = movies.map(async (movieId) => {
+    const movie = await findMoviebyId(movieId);
+    return movie;
+  });
+  const movieResults = await Promise.all(moviePromises);
+  const filteredMovieResults = movieResults.filter(movie => movie !== null) as Mov[];
+  console.log(filteredMovieResults)
+  console.log(listaHome)
+  //const recommendations = recommendMovies(filteredMovieResults, listaHome);
+  res.status(200).send('prueba');
+  //res.status(200).send({ recommendations });
+});
+
 
 
 export default router;
