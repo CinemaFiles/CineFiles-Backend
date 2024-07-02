@@ -5,10 +5,10 @@ import movies from './routes/movies'
 import cors from 'cors'
 import { ListaSimple } from './utils/ListaSimple'
 import { allmovies } from './controllers/movies'
-import { BinarySearchTree } from './utils/binaryTree'
+import { AVLTree } from './utils/binaryTree'
 
 export const listaHome = new ListaSimple();
-export const binarytree = new BinarySearchTree(); 
+export const binarytree = new AVLTree(); 
 
 const initMovies = (listaHome : ListaSimple) =>{
     allmovies().then(movies  => {
