@@ -30,7 +30,7 @@ async function rellenarListas(){
 async function ordenarPeliculas(){
     await rellenarListas();
 
-    const iteraciones = 10000;
+    const iteraciones = 100;
     let tiempoTotal = {
         lista_10: 0,
         lista_100: 0,
@@ -74,13 +74,10 @@ async function ordenarPeliculas(){
         tiempoTotal.lista_10000 += (finT - inicioT);
     }
     
-    console.log(lista_10.peliculas.length)
+    console.log(`Se estan realizando ${iteraciones} iteraciones para calcular el tiempo promedio de ordenación`)
     console.log(`Promedio de tiempo de ordenación para una lista de 10 peliculas: ${tiempoTotal.lista_10 / iteraciones} ms`);
-    console.log(lista_100.peliculas.length)
     console.log(`Promedio de tiempo de ordenación para una lista de 100 peliculas: ${tiempoTotal.lista_100 / iteraciones} ms`);
-    console.log(lista_1000.peliculas.length)
     console.log(`Promedio de tiempo de ordenación para una lista de 1000 peliculas: ${tiempoTotal.lista_1000 / iteraciones} ms`);
-    console.log(lista_10000.peliculas.length)
     console.log(`Promedio de tiempo de ordenación para una lista de 10000 peliculas: ${tiempoTotal.lista_10000 / iteraciones} ms`); 
 }
 
