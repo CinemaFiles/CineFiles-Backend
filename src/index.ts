@@ -7,6 +7,7 @@ import { ListaSimple } from './utils/ListaSimple'
 import { allmovies } from './controllers/movies'
 import { BinarySearchTree } from './utils/binaryTree'
 
+
 export const listaHome = new ListaSimple();
 export const binarytree = new BinarySearchTree(); 
 
@@ -25,12 +26,11 @@ const initMovies = (listaHome : ListaSimple) =>{
     })
 }
 
-
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 
-app.use(cors());
 app.use(express.json());//midleware para parsear todo a json
 app.use(morgan('dev'));
 
