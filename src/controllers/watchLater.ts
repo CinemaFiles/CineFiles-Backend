@@ -3,14 +3,23 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function addWatchLater (userId:string , movieId : string){
+   console.log(userId)
+   console.log(movieId)
+try{
     const watchLater = await prisma.see_later.create({
         data:{
-            user_id: BigInt(userId),
-            id_movie: BigInt(movieId)
+            user_id: BigInt(userId as string) ,
+            id_movie: BigInt(movieId as string)
             }
         })
     return watchLater;  
+    }catch(error){
+        console.log(error)
+        return error;
     }
+
+
+}
 
 export async function removeWatchLater (userId:string , movieId : string){
     const id_see_later = await prisma.see_later.findFirst({

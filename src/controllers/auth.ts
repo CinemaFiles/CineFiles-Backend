@@ -3,8 +3,6 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createUserSchema, loginUserSchema } from "../schemas/auth.schema";
 import { Hashing, CompareHash } from '../utils/hash';
 import jwt from 'jsonwebtoken';
-import { string } from "zod";
-
 
 const ONE_MONTH = 30 * 24 * 60 * 60;
 const prisma = new PrismaClient();
