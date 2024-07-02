@@ -37,6 +37,17 @@ router.get("/home", (req, res)=>{
     res.json(listaHome.peliculas.slice(21*(index-1),21*index));
 });
 
+router.get('/data/:id', (req, res)=>{
+  const {id} = req.params;
+  findMoviebyId(id).then(movie => {
+    console.log(movie);
+    res.status(200).json(movie);
+  }).catch(error => {
+    console.log(error);
+    res.status(400).send({message: "Movie not found."});
+  })
+})
+
 router.get('/info_movie/:id', (req, res) =>{
     const {id} = req.params;
     findMoviebyId(id)
@@ -587,24 +598,32 @@ router.get("/search/:filter", (req, res) => {
 });
 
 router.post("/watchlater/add", (req, res) => {
-    const { movieId, userId } = req.body;
-    watchLaterQueue.agregarElemento(userId, movieId);
+    const user = req.body.userId;
+    const movie = req.body.movieId;
+    console.log(user, movie)
+    console.log(typeof user, typeof movie)
+    watchLaterQueue.agregarElemento(user, movie);
     res.status(200).send({ message: "Movie added to watch later queue." });
 });
 
-/* router.post("/watchlater/remove", (_req, res) => {
-    const removedMovie = watchLaterQueue.quitarElemento();
+router.post("/watchlater/remove", (req, res) => {
+    const user = req.body.userId;
+    const removedMovie = watchLaterQueue.quitarElemento(user);
     if (removedMovie) {
         res.status(200).send({ message: "Movie removed from watch later queue.", movie: removedMovie });
     } else {
         res.status(404).send({ message: "No movies in watch later queue." });
     }
-}); */
+});
 
-/* router.get("/watchlater", (_req, res) => {
-    const movies = watchLaterQueue.obtenerTodos();
-    res.status(200).json(movies);
-}); */
+router.post("/watchlater/all", async (req, res) => {
+  const user = req.body.userId;
+  console.log(user)
+  console.log(typeof user)
+  const movies = await watchLaterQueue.obtenerTodos(user as string);
+  console.log(movies)
+  res.status(200).json(movies);
+});
 
 
 export default router;
