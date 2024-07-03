@@ -1,10 +1,11 @@
 import express from "express";
 import { allmovies } from "../controllers/movies";
 import { Cola } from "../utils/queue";
-import { Mov, Movie } from "../schemas/movie";
+import {  Movie } from "../schemas/movie";
 import { listaHome, binarytree } from "..";
 import { findMoviebyId } from "../controllers/movies";
 import { cosineSimilarity } from "../utils/recomendation";
+import { recommendMovies } from "../utils/sistemarecomendacion";
 //import { recommendMovies } from "../utils/sistemarecomendacion";
 
 const router = express.Router();
@@ -556,8 +557,8 @@ font-size: small;
         </div>    
         
         <nav id="navbar" class="navbar">
-            <a id="navigate" href="./navigate.html">Navigate</a>
-            <a id="account" href="./profile.html">Profile</a> 
+            <a id="navigate" href="https://cinemafiles.github.io/CineFiles-front/Files/navigate.html">Navigate</a>
+            <a id="account" href="https://cinemafiles.github.io/CineFiles-front/Files/profile.html">Profile</a> 
             <a id="login" href="./login.html"></a>
         </nav>
     </header>
@@ -689,21 +690,9 @@ router.post("/watchlater/all", async (req, res) => {
 
 router.post('/watchlater/recommend', async (req, res) => {
   const user = req.body.userId; //id del usuario //necesitamos esta wbd para saber que las pelis son de el
-  const movies = await watchLaterQueue.obtenerTodos(user as string)
-  console.log(movies)
-  const moviePromises = movies.map(async (movieId) => {
-    const movie = await findMoviebyId(movieId);
-    return movie;
-  });
-  const movieResults = await Promise.all(moviePromises);
-  const filteredMovieResults = movieResults.filter(movie => movie !== null) as Mov[];
-  console.log(filteredMovieResults)
-  console.log(listaHome)
-  //const recommendations = recommendMovies(filteredMovieResults, listaHome);
-  res.status(200).send('prueba');
-  //res.status(200).send({ recommendations });
+  const recommendations = await recommendMovies(user);
+  res.status(200).json(recommendations);
 });
-
 
 
 export default router;
